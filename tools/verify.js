@@ -1,0 +1,26 @@
+const { chromium } = require('playwright-core');
+const url = process.argv[2];
+if (!url) throw new Error('usage: node verify.js <url>');
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.getByRole('button', { name: 'RUN DECK Ctrl+Enter' }).click();
+  await page.getByText('HELLO, WORLD!').waitFor();
+  const initial = await page.locator('#output').textContent();
+  if (!initial.includes('5') || (initial.match(/BEEP/g) || []).length !== 2) throw new Error(`unexpected pointer result: ${initial}`);
+  const editor = page.locator('#program');
+  await editor.focus();
+  await page.keyboard.press('Control+A');
+  await page.keyboard.type('PRINT KEYBOARD');
+  await page.keyboard.press('Control+Enter');
+  await page.getByText('KEYBOARD').waitFor();
+  await editor.fill('WOBBLE');
+  await page.keyboard.press('Control+Enter');
+  await page.getByText('CARD 1 JAM').waitFor();
+  if (errors.length) throw new Error(errors.join('\n'));
+  console.log('verified: pointer run, keyboard run, malformed-card jam');
+  await browser.close();
+})().catch(error => { console.error(error); process.exit(1); });

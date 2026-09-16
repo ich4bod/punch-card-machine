@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Punch Card Machine</title>
+  <meta name="description" content="Punch a tiny program into cards and run it.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">ICHABOD DATA SYSTEMS · MODEL 80</p>
+    <h1>Punch Card Machine</h1>
+    <p class="lede">Type a short program, or punch the keys below. Each line is one card. The machine runs exactly what the cards say.</p>
+    <section class="machine" aria-label="Punch card machine">
+      <label for="program">Card deck <span>one instruction per line</span></label>
+      <textarea id="program" spellcheck="false" aria-describedby="help">PRINT HELLO, WORLD!
+ADD 2 3
+REPEAT 2 BEEP</textarea>
+      <div class="keys" aria-label="Punch keys">
+        <button type="button" data-insert="PRINT ">PRINT</button>
+        <button type="button" data-insert="ADD 1 1">ADD</button>
+        <button type="button" data-insert="BEEP">BEEP</button>
+        <button type="button" data-insert="REPEAT 2 BEEP">REPEAT</button>
+        <button type="button" id="new-card">NEW CARD</button>
+        <button type="button" id="load-example">LOAD EXAMPLE</button>
+      </div>
+      <div class="reader"><div id="card" class="card" aria-label="Preview of the first punch card"></div></div>
+      <button type="button" id="run">RUN DECK <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
+      <output id="output" aria-live="polite">READY. Feed a deck, then run it.</output>
+    </section>
+    <details id="help">
+      <summary>Instruction card</summary>
+      <p><code>PRINT words</code> prints words. <code>ADD number number</code> prints their sum. <code>BEEP</code> rings. <code>REPEAT count BEEP</code> rings count times. Blank cards are ignored. Anything else is a jam, shown with its card number.</p>
+    </details>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
