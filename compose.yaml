@@ -1,13 +1,19 @@
 name: punch-card-machine
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        OCI_REVISION: ${OCI_REVISION:?set the checked-out source revision before building}
+        OCI_CREATED: ${OCI_CREATED:?set the release timestamp before building}
     restart: unless-stopped
     expose:
       - "3000"
     networks:
       - proxy
     labels:
+      - org.opencontainers.image.revision=${OCI_REVISION:?set the checked-out source revision before building}
+      - org.opencontainers.image.created=${OCI_CREATED:?set the release timestamp before building}
       - traefik.enable=true
       - "traefik.http.routers.punch-card-machine.rule=Host(`punch-card-machine.ichabod-crane.net`)"
       - traefik.http.routers.punch-card-machine.entrypoints=websecure
